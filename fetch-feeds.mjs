@@ -128,16 +128,25 @@ async function getFeed(feed) {
 }
 
 const feeds = JSON.parse(await readFile(new URL("./feeds.json", import.meta.url), "utf8"));
-// Reddit blocks bursts of requests, so subreddits are fetched one at a time with a pause.
+// If a site fails this run, keep its stories from the previous run.
+let previous = { items: [], sources: [] };
+try { previous = JSON.parse(await readFile(new URL("./data/news.json", import.meta.url), "utf8")); } catch {}
+const prevSrc = new Map((previous.sources || []).map((s) => [s.id, s]));
+
+// Reddit rate-limits shared servers after a few requests, so each run refreshes only the
+// REDDIT_PER_RUN subreddits that were updated longest ago; the rest keep their last stories.
+const REDDIT_PER_RUN = 3;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 async function getRedditFeeds(list) {
   const out = new Map();
-  for (const f of list) {
+  const due = [...list].sort((a, b) => (prevSrc.get(a.id)?.fetched || 0) - (prevSrc.get(b.id)?.fetched || 0)).slice(0, REDDIT_PER_RUN);
+  for (const f of due) {
     let res = await getFeed(f);
-    if (res.status !== "ok") { await sleep(8000); res = await getFeed(f); } // one retry after a longer pause
+    if (res.status !== "ok") { await sleep(15000); res = await getFeed(f); } // one retry after a longer pause
     out.set(f.id, res);
-    await sleep(4000);
+    await sleep(6000);
   }
+  for (const f of list) if (!out.has(f.id)) out.set(f.id, { items: [], status: "skip" });
   return out;
 }
 const [plain, reddit] = await Promise.all([
@@ -147,16 +156,17 @@ const [plain, reddit] = await Promise.all([
 const plainIt = plain[Symbol.iterator]();
 const results = feeds.map((f) => (f.reddit ? reddit.get(f.id) : plainIt.next().value));
 
-// If a site fails this run, keep its stories from the previous run.
-let previous = { items: [] };
-try { previous = JSON.parse(await readFile(new URL("./data/news.json", import.meta.url), "utf8")); } catch {}
-
 const sources = [];
 let all = [];
 feeds.forEach((f, idx) => {
   let { items, status } = results[idx];
-  if (!items.length) items = (previous.items || []).filter((it) => it.s === f.id);
-  sources.push({ id: f.id, name: f.name, cat: f.cat, site: f.site || new URL(f.url).origin, status, count: items.length });
+  const prev = prevSrc.get(f.id);
+  let fetched = status === "ok" ? Date.now() : prev?.fetched || 0;
+  if (!items.length) {
+    items = (previous.items || []).filter((it) => it.s === f.id);
+    if (status === "skip") status = items.length ? "ok" : "waiting for next update";
+  }
+  sources.push({ id: f.id, name: f.name, cat: f.cat, site: f.site || new URL(f.url).origin, status, count: items.length, fetched });
   all.push(...items);
   console.log(`${status === "ok" ? "✔" : "✖"} ${f.name.padEnd(18)} ${String(items.length).padStart(3)}  ${status}`);
 });
@@ -173,6 +183,9 @@ all = all
     return true;
   })
   .slice(0, MAX_ITEMS);
+const counts = {};
+for (const it of all) counts[it.s] = (counts[it.s] || 0) + 1;
+for (const src of sources) src.count = counts[src.id] || 0;
 
 await mkdir(new URL("./data/", import.meta.url), { recursive: true });
 await writeFile(new URL("./data/news.json", import.meta.url), JSON.stringify({ updated: Date.now(), sources, items: all }));
