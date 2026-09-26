@@ -1,6 +1,7 @@
 // Fetches every feed in feeds.json and writes data/news.json.
 // No dependencies — runs on Node 18+ (GitHub Actions uses Node 22).
 import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { execFile } from "node:child_process";
 
 const PER_FEED = 30;       // newest stories kept from each site
 const MAX_ITEMS = 400;     // cap for the whole file
@@ -68,6 +69,22 @@ function parse(xml, feed) {
   return items;
 }
 
+const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36";
+
+// Some sites block Node's built-in fetch but allow curl, so curl is the backup.
+function curlText(url) {
+  return new Promise((resolve, reject) => {
+    execFile("curl", ["-sSL", "--compressed", "-m", "25", "-A", UA, "-H", "Accept: application/rss+xml, application/xml, text/xml, */*", "-w", "\n%{http_code}", url],
+      { maxBuffer: 20 * 1024 * 1024 }, (err, out) => {
+        if (err) return reject(new Error("curl failed"));
+        const i = out.lastIndexOf("\n");
+        const code = Number(out.slice(i + 1));
+        if (code < 200 || code >= 300) return reject(new Error(`HTTP ${code}`));
+        resolve(out.slice(0, i));
+      });
+  });
+}
+
 async function getFeed(feed) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 20000);
@@ -75,10 +92,12 @@ async function getFeed(feed) {
     const res = await fetch(feed.url, {
       signal: ctrl.signal,
       redirect: "follow",
-      headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36 PriceDropQA-News/1.0", Accept: "application/rss+xml, application/atom+xml, application/xml, text/xml, */*" },
+      headers: { "User-Agent": UA, Accept: "application/rss+xml, application/atom+xml, application/xml, text/xml, */*" },
     });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const items = parse(await res.text(), feed);
+    let xml;
+    if (res.ok) xml = await res.text();
+    else xml = await curlText(feed.url).catch(() => { throw new Error(`HTTP ${res.status}`); });
+    const items = parse(xml, feed);
     if (!items.length) throw new Error("no stories found");
     return { items, status: "ok" };
   } catch (e) {

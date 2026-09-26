@@ -9,5 +9,10 @@
   {"id": "redmondpie", "name": "Redmond Pie", "url": "https://feeds.feedburner.com/RedmondPie", "cat": "apple", "site": "https://www.redmondpie.com"},
   {"id": "gsmarena", "name": "GSMArena", "url": "https://www.gsmarena.com/rss-news-reviews.php3", "cat": "tech"},
   {"id": "tomsguide", "name": "Tom's Guide", "url": "https://www.tomsguide.com/feeds/all", "cat": "tech"},
-  {"id": "engadget", "name": "Engadget", "url": "https://www.engadget.com/rss.xml", "cat": "tech"}
+  {"id": "engadget", "name": "Engadget", "url": "https://www.engadget.com/rss.xml", "cat": "tech"},
+  {"id": "marunadan", "name": "Marunadan Malayali", "url": "https://marunadanmalayalee.com/feeds.xml", "cat": "malayalam", "site": "https://marunadanmalayalee.com"},
+  {"id": "mathrubhumi", "name": "Mathrubhumi", "url": "https://www.mathrubhumi.com/sitemaps/mathrubhumi/rss", "cat": "malayalam", "site": "https://www.mathrubhumi.com"},
+  {"id": "manorama", "name": "Manorama", "url": "https://www.manoramaonline.com/news/latest-news.feeds.rss.xml", "cat": "malayalam", "site": "https://www.manoramaonline.com"},
+  {"id": "asianet", "name": "Asianet News", "url": "https://www.asianetnews.com/rss", "cat": "malayalam", "site": "https://www.asianetnews.com"},
+  {"id": "24news", "name": "24 News", "url": "https://www.twentyfournews.com/feed", "cat": "malayalam", "site": "https://www.twentyfournews.com"}
 ]

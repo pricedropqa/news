@@ -131,6 +131,15 @@
   }
 
   // ---------- filtering ----------
+  // "Latest" is tech news only; Malayalam news lives in its own tab.
+  const TOPIC_TABS = ["android", "apple", "malayalam"];
+  function inTab(it) {
+    const c = it.c || [];
+    if (TOPIC_TABS.includes(state.tab)) return c.includes(state.tab);
+    if (state.tab === "all") return !c.includes("malayalam");
+    return true;
+  }
+
   function items() {
     if (state.tab === "saved") return state.saved.slice().sort((a, b) => b.d - a.d);
     const seen = new Set();
@@ -138,7 +147,7 @@
       if (seen.has(it.l)) return false; seen.add(it.l); return true;
     });
     list = list.filter((it) => !state.off.has(it.s));
-    if (state.tab === "android" || state.tab === "apple") list = list.filter((it) => (it.c || []).includes(state.tab));
+    list = list.filter(inTab);
     if (state.source) list = list.filter((it) => it.s === state.source);
     if (state.q) {
       const words = state.q.toLowerCase().split(/\s+/).filter(Boolean);
@@ -167,8 +176,7 @@
 
   function renderChips() {
     const counts = {};
-    const pool = [...state.data.items, ...state.customItems].filter((it) =>
-      state.tab === "all" || state.tab === "saved" || (it.c || []).includes(state.tab));
+    const pool = [...state.data.items, ...state.customItems].filter(inTab);
     pool.forEach((it) => (counts[it.s] = (counts[it.s] || 0) + 1));
     const srcs = allSources().filter((s) => !state.off.has(s.id) && counts[s.id]);
     const chip = (id, label, n, cat) =>
@@ -184,7 +192,8 @@
     const thumb = it.i
       ? `<img class="thumb" src="${esc(it.i)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-ph="${esc(initials(src.name))}">`
       : `<div class="thumb ph" aria-hidden="true">${esc(initials(src.name))}</div>`;
-    return `<article class="story${state.read.has(it.l) ? " read" : ""}">
+    const ml = src.cat === "malayalam" || (it.c || []).includes("malayalam");
+    return `<article class="story${ml ? " ml" : ""}${state.read.has(it.l) ? " read" : ""}"${ml ? ' lang="ml"' : ""}>
       <a class="link" href="${esc(it.l)}" target="_blank" rel="noopener" aria-label="${esc(it.t)} — ${esc(src.name)}"></a>
       <div class="body">
         <div class="meta"><span class="dot ${esc(src.cat)}"></span><span class="src">${esc(src.name)}</span><span>·</span><time datetime="${new Date(it.d).toISOString()}">${ago(it.d)}</time></div>
@@ -366,7 +375,7 @@
 
   // Start
   const hashTab = (location.hash || "").slice(1);
-  state.tab = ["all", "android", "apple", "saved", "sources"].includes(hashTab) ? hashTab : store.get("tab", "all");
+  state.tab = ["all", "android", "apple", "malayalam", "saved", "sources"].includes(hashTab) ? hashTab : store.get("tab", "all");
   render();
   refresh(false);
   setInterval(renderStatus, 60000);

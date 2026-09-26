@@ -1,8 +1,8 @@
 # PriceDrop QA News
 
-Android, iPhone and tech news from 11 sites in one fast app (PWA).
+Android, iPhone and tech news from 11 sites, plus Malayalam news from 5 Kerala sites, in one fast app (PWA).
 
-Live: **https://pricedropqa.github.io/news/**
+Live: **https://pricedropqa.qa/news/**
 
 A GitHub Action (`.github/workflows/update-news.yml`) runs every 30 minutes: it reads every feed in `feeds.json`, writes `data/news.json`, and publishes the site to GitHub Pages.
 
@@ -14,7 +14,7 @@ Edit `feeds.json` and add one line:
 {"id": "sammobile", "name": "SamMobile", "url": "https://www.sammobile.com/feed/", "cat": "android"},
 ```
 
-`cat` is `android`, `apple` or `tech`. Commit, and the site updates in about a minute.
+`cat` is `android`, `apple`, `tech` or `malayalam`. Malayalam sites appear only in the മലയാളം tab. Commit, and the site updates in about a minute.
 
 ## Files
 

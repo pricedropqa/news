@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>PriceDrop QA News</title>
-<meta name="description" content="Latest Android, iPhone and tech news from 11 top sites in one fast app. By PriceDrop QA, Qatar.">
+<meta name="description" content="Latest Android, iPhone and tech news, plus Malayalam news from Kerala, in one fast app. By PriceDrop QA, Qatar.">
 <meta name="theme-color" content="#2447E0">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -13,11 +13,11 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="PD News">
 <meta property="og:title" content="PriceDrop QA News">
-<meta property="og:description" content="Android, iPhone and tech news from 11 top sites, updated every 30 minutes.">
+<meta property="og:description" content="Android, iPhone, tech and Malayalam news from 16 sites, updated every 30 minutes.">
 <meta property="og:image" content="icon-512.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@500&family=Noto+Sans+Malayalam:wght@400;600&display=swap">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -70,6 +70,7 @@
           <option value="android">Android</option>
           <option value="apple">iPhone / Apple</option>
           <option value="tech">General tech</option>
+          <option value="malayalam">Malayalam news</option>
         </select>
         <button type="submit">Add feed</button>
       </form>
@@ -91,6 +92,8 @@
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17a7 7 0 0 1 14 0z" fill="currentColor"/><path d="M7.5 7.5 9 10M16.5 7.5 15 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Android</button>
     <button type="button" data-tab="apple">
       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10.5 5h3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>iPhone</button>
+    <button type="button" data-tab="malayalam" lang="ml">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="18.5" text-anchor="middle" font-size="17" font-weight="600" fill="currentColor" font-family="'Noto Sans Malayalam', sans-serif">അ</text></svg>മലയാളം</button>
     <button type="button" data-tab="saved">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.5h12v17l-6-4-6 4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Saved</button>
     <button type="button" data-tab="sources">
