@@ -3,6 +3,7 @@
   {"id": "xda", "name": "XDA", "url": "https://www.xda-developers.com/feed/", "cat": "android"},
   {"id": "9to5google", "name": "9to5Google", "url": "https://9to5google.com/feed/", "cat": "android"},
   {"id": "androidauth", "name": "Android Authority", "url": "https://www.androidauthority.com/feed/", "cat": "android"},
+  {"id": "sammobile", "name": "SamMobile", "url": "https://www.sammobile.com/feed/", "cat": "android", "site": "https://www.sammobile.com", "fallback": "https://news.google.com/rss/search?q=site:sammobile.com/news+when:3d&hl=en-US&gl=US&ceid=US:en", "trim": "SamMobile"},
   {"id": "9to5mac", "name": "9to5Mac", "url": "https://9to5mac.com/feed/", "cat": "apple"},
   {"id": "macrumors", "name": "MacRumors", "url": "https://feeds.macrumors.com/MacRumors-All", "cat": "apple"},
   {"id": "appleinsider", "name": "AppleInsider", "url": "https://appleinsider.com/rss/news/", "cat": "apple"},

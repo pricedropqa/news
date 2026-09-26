@@ -1,6 +1,6 @@
 # PriceDrop QA News
 
-Tech news (11 sites), Malayalam news (5), world news (NDTV, BBC, Reuters) and football news (BBC Sport, Sky Sports, The Guardian, ESPN FC), plus Reddit communities in each section, in one fast app (PWA).
+Tech news (12 sites), Malayalam news (5), world news (NDTV, BBC, Reuters) and football news (BBC Sport, Sky Sports, The Guardian, ESPN FC), plus Reddit communities in each section, in one fast app (PWA).
 
 Live: **https://pricedropqa.qa/news/**
 
