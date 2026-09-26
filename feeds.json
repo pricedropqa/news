@@ -21,5 +21,16 @@
   {"id": "bbcfootball", "name": "BBC Sport", "url": "https://feeds.bbci.co.uk/sport/football/rss.xml", "cat": "football", "site": "https://www.bbc.com/sport/football"},
   {"id": "skyfootball", "name": "Sky Sports", "url": "https://www.skysports.com/rss/11095", "cat": "football", "site": "https://www.skysports.com/football"},
   {"id": "guardianfootball", "name": "The Guardian", "url": "https://www.theguardian.com/football/rss", "cat": "football", "site": "https://www.theguardian.com/football"},
-  {"id": "espnfc", "name": "ESPN FC", "url": "https://www.espn.com/espn/rss/soccer/news", "cat": "football", "site": "https://www.espn.com/soccer", "fallback": "https://news.google.com/rss/search?q=site:espn.com+soccer+when:1d&hl=en-US&gl=US&ceid=US:en", "trim": "espn.com|ESPN"}
+  {"id": "espnfc", "name": "ESPN FC", "url": "https://www.espn.com/espn/rss/soccer/news", "cat": "football", "site": "https://www.espn.com/soccer", "fallback": "https://news.google.com/rss/search?q=site:espn.com+soccer+when:1d&hl=en-US&gl=US&ceid=US:en", "trim": "espn.com|ESPN"},
+  {"id": "r-android", "name": "r/Android", "url": "https://www.reddit.com/r/Android/.rss", "cat": "android", "site": "https://www.reddit.com/r/Android", "reddit": true},
+  {"id": "r-googlepixel", "name": "r/GooglePixel", "url": "https://www.reddit.com/r/GooglePixel/.rss", "cat": "android", "site": "https://www.reddit.com/r/GooglePixel", "reddit": true},
+  {"id": "r-samsung", "name": "r/samsung", "url": "https://www.reddit.com/r/samsung/.rss", "cat": "android", "site": "https://www.reddit.com/r/samsung", "reddit": true},
+  {"id": "r-apple", "name": "r/apple", "url": "https://www.reddit.com/r/apple/.rss", "cat": "apple", "site": "https://www.reddit.com/r/apple", "reddit": true},
+  {"id": "r-iphone", "name": "r/iphone", "url": "https://www.reddit.com/r/iphone/.rss", "cat": "apple", "site": "https://www.reddit.com/r/iphone", "reddit": true},
+  {"id": "r-gadgets", "name": "r/gadgets", "url": "https://www.reddit.com/r/gadgets/.rss", "cat": "tech", "site": "https://www.reddit.com/r/gadgets", "reddit": true},
+  {"id": "r-technology", "name": "r/technology", "url": "https://www.reddit.com/r/technology/.rss", "cat": "tech", "site": "https://www.reddit.com/r/technology", "reddit": true},
+  {"id": "r-kerala", "name": "r/Kerala", "url": "https://www.reddit.com/r/Kerala/.rss", "cat": "malayalam", "site": "https://www.reddit.com/r/Kerala", "reddit": true},
+  {"id": "r-worldnews", "name": "r/worldnews", "url": "https://www.reddit.com/r/worldnews/.rss", "cat": "world", "site": "https://www.reddit.com/r/worldnews", "reddit": true},
+  {"id": "r-qatar", "name": "r/qatar", "url": "https://www.reddit.com/r/qatar/.rss", "cat": "world", "site": "https://www.reddit.com/r/qatar", "reddit": true},
+  {"id": "r-soccer", "name": "r/soccer", "url": "https://www.reddit.com/r/soccer/.rss", "cat": "football", "site": "https://www.reddit.com/r/soccer", "reddit": true}
 ]

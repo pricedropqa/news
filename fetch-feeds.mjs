@@ -4,7 +4,7 @@ import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { execFile } from "node:child_process";
 
 const PER_FEED = 30;       // newest stories kept from each site
-const MAX_ITEMS = 700;     // cap for the whole file
+const MAX_ITEMS = 1000;     // cap for the whole file
 const MAX_AGE_DAYS = 10;   // drop anything older than this
 
 const ANDROID_RE = /\b(android|pixel|galaxy|samsung|one ?ui|oneplus|xiaomi|redmi|poco|oppo|vivo|realme|honor|huawei|motorola|moto g|nothing phone|qualcomm|snapdragon|wear ?os|chromebook|gemini)\b/i;
@@ -65,6 +65,7 @@ function parse(xml, feed) {
     const rawHtml = decode(html).includes("<") ? decode(html) : html;
     let desc = stripHtml(decode(tag(b, "description") || tag(b, "summary") || html));
     desc = desc.replace(/\b(The post|Read more|Continue reading)\b[\s\S]*$/i, "").trim();
+    desc = desc.replace(/\s*submitted by\s+\/u\/[\s\S]*$/i, "").trim(); // Reddit footer
     if (desc.length > 220) desc = desc.slice(0, 217).replace(/\s+\S*$/, "") + "…";
     if (desc && title && desc.startsWith(title.slice(0, 40))) desc = ""; // summary just repeats the headline (Google News)
     const t = parseDate(date) || Date.now();
@@ -127,7 +128,24 @@ async function getFeed(feed) {
 }
 
 const feeds = JSON.parse(await readFile(new URL("./feeds.json", import.meta.url), "utf8"));
-const results = await Promise.all(feeds.map(getFeed));
+// Reddit blocks bursts of requests, so subreddits are fetched one at a time with a pause.
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+async function getRedditFeeds(list) {
+  const out = new Map();
+  for (const f of list) {
+    let res = await getFeed(f);
+    if (res.status !== "ok") { await sleep(8000); res = await getFeed(f); } // one retry after a longer pause
+    out.set(f.id, res);
+    await sleep(4000);
+  }
+  return out;
+}
+const [plain, reddit] = await Promise.all([
+  Promise.all(feeds.filter((f) => !f.reddit).map(getFeed)),
+  getRedditFeeds(feeds.filter((f) => f.reddit)),
+]);
+const plainIt = plain[Symbol.iterator]();
+const results = feeds.map((f) => (f.reddit ? reddit.get(f.id) : plainIt.next().value));
 
 // If a site fails this run, keep its stories from the previous run.
 let previous = { items: [] };

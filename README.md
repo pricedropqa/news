@@ -1,6 +1,6 @@
 # PriceDrop QA News
 
-Tech news (11 sites), Malayalam news (5), world news (NDTV, BBC, Reuters) and football news (BBC Sport, Sky Sports, The Guardian, ESPN FC) in one fast app (PWA).
+Tech news (11 sites), Malayalam news (5), world news (NDTV, BBC, Reuters) and football news (BBC Sport, Sky Sports, The Guardian, ESPN FC), plus Reddit communities in each section, in one fast app (PWA).
 
 Live: **https://pricedropqa.qa/news/**
 
@@ -14,7 +14,7 @@ Edit `feeds.json` and add one line:
 {"id": "sammobile", "name": "SamMobile", "url": "https://www.sammobile.com/feed/", "cat": "android"},
 ```
 
-`cat` is `android`, `apple` or `tech` (Tech tab), or `malayalam`, `world` or `football` (their own tabs). A site that blocks GitHub can get a `"fallback"` feed, such as a Google News search for that site. Commit, and the site updates in about a minute.
+`cat` is `android`, `apple` or `tech` (Tech tab), or `malayalam`, `world` or `football` (their own tabs). Subreddits use `"url": "https://www.reddit.com/r/NAME/.rss"` with `"reddit": true` (fetched one by one, because Reddit blocks fast bursts). A site that blocks GitHub can get a `"fallback"` feed, such as a Google News search for that site. Commit, and the site updates in about a minute.
 
 ## Files
 
