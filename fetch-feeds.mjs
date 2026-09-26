@@ -4,7 +4,7 @@ import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { execFile } from "node:child_process";
 
 const PER_FEED = 30;       // newest stories kept from each site
-const MAX_ITEMS = 500;     // cap for the whole file
+const MAX_ITEMS = 700;     // cap for the whole file
 const MAX_AGE_DAYS = 10;   // drop anything older than this
 
 const ANDROID_RE = /\b(android|pixel|galaxy|samsung|one ?ui|oneplus|xiaomi|redmi|poco|oppo|vivo|realme|honor|huawei|motorola|moto g|nothing phone|qualcomm|snapdragon|wear ?os|chromebook|gemini)\b/i;
@@ -44,6 +44,13 @@ function findImage(block, html) {
   return cands.find((u) => /^https?:\/\//.test(u) && !/feedburner|pixel|1x1|gravatar/i.test(u)) || "";
 }
 
+// Date.parse doesn't know zone names like "BST" (Sky Sports) or "IST", so swap them for offsets.
+const ZONES = { BST: "+0100", IST: "+0530", CET: "+0100", CEST: "+0200", AEST: "+1000", AST: "+0300" };
+function parseDate(s) {
+  if (!s) return 0;
+  return Date.parse(s) || Date.parse(s.replace(/\b([A-Z]{3,4})\s*$/, (m, z) => ZONES[z] || m)) || 0;
+}
+
 function parse(xml, feed) {
   const items = [];
   const isAtom = /<feed[\s>]/i.test(xml) && !/<rss[\s>]/i.test(xml);
@@ -59,7 +66,8 @@ function parse(xml, feed) {
     let desc = stripHtml(decode(tag(b, "description") || tag(b, "summary") || html));
     desc = desc.replace(/\b(The post|Read more|Continue reading)\b[\s\S]*$/i, "").trim();
     if (desc.length > 220) desc = desc.slice(0, 217).replace(/\s+\S*$/, "") + "…";
-    const t = Date.parse(date) || Date.now();
+    if (desc && title && desc.startsWith(title.slice(0, 40))) desc = ""; // summary just repeats the headline (Google News)
+    const t = parseDate(date) || Date.now();
     if (!title || !/^https?:\/\//.test(link)) continue;
     const text = `${title} ${desc}`;
     const cats = new Set([feed.cat]);

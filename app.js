@@ -23,6 +23,7 @@
     saved: store.get("saved", []),            // full item objects
     read: new Set(store.get("read", [])),
     tab: "all",
+    sub: "",          // Tech tab filter: "", "android" or "apple"
     source: "",
     q: "",
     shown: PAGE,
@@ -131,12 +132,16 @@
   }
 
   // ---------- filtering ----------
-  // "Latest" is tech news only; Malayalam news lives in its own tab.
-  const TOPIC_TABS = ["android", "apple", "malayalam"];
+  // The Tech tab ("all") shows tech sites only; each section has its own tab.
+  const SECTIONS = ["malayalam", "world", "football"];
+  const TABS = ["all", ...SECTIONS, "saved", "sources"];
   function inTab(it) {
     const c = it.c || [];
-    if (TOPIC_TABS.includes(state.tab)) return c.includes(state.tab);
-    if (state.tab === "all") return !c.includes("malayalam");
+    if (SECTIONS.includes(state.tab)) return c.includes(state.tab);
+    if (state.tab === "all") {
+      if (c.some((x) => SECTIONS.includes(x))) return false;
+      return !state.sub || c.includes(state.sub);
+    }
     return true;
   }
 
@@ -192,7 +197,7 @@
     const thumb = it.i
       ? `<img class="thumb" src="${esc(it.i)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-ph="${esc(initials(src.name))}">`
       : `<div class="thumb ph" aria-hidden="true">${esc(initials(src.name))}</div>`;
-    const ml = src.cat === "malayalam" || (it.c || []).includes("malayalam");
+    const ml = src.cat === "malayalam";
     return `<article class="story${ml ? " ml" : ""}${state.read.has(it.l) ? " read" : ""}"${ml ? ' lang="ml"' : ""}>
       <a class="link" href="${esc(it.l)}" target="_blank" rel="noopener" aria-label="${esc(it.t)} — ${esc(src.name)}"></a>
       <div class="body">
@@ -255,19 +260,26 @@
     $("feedView").hidden = isSources;
     $("sourcesView").hidden = !isSources;
     $("controls").hidden = isSources;
+    $("subnav").hidden = state.tab !== "all";
     document.querySelectorAll(".tabs button").forEach((b) => b.classList.toggle("active", b.dataset.tab === state.tab));
+    document.querySelectorAll("#subnav button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.sub === state.sub)));
     if (isSources) renderSources();
     else { renderChips(); renderList(); }
   }
 
   // ---------- events ----------
-  function setTab(tab) {
-    state.tab = tab; state.shown = PAGE; state.source = "";
-    store.set("tab", tab);
-    try { history.replaceState(null, "", "#" + tab); } catch {}
+  function setTab(tab, sub = "") {
+    state.tab = tab; state.sub = tab === "all" ? sub : ""; state.shown = PAGE; state.source = "";
+    store.set("tab", state.sub || tab);
+    try { history.replaceState(null, "", "#" + (state.sub || tab)); } catch {}
     render();
     window.scrollTo({ top: 0 });
   }
+
+  $("subnav").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-sub]");
+    if (b) setTab("all", b.dataset.sub);
+  });
 
   document.querySelector(".tabs").addEventListener("click", (e) => {
     const b = e.target.closest("button[data-tab]");
@@ -373,9 +385,10 @@
     toast(next === "dark" ? "Dark mode" : "Light mode");
   });
 
-  // Start
-  const hashTab = (location.hash || "").slice(1);
-  state.tab = ["all", "android", "apple", "malayalam", "saved", "sources"].includes(hashTab) ? hashTab : store.get("tab", "all");
+  // Start (#android and #apple open the Tech tab with that filter)
+  const openAt = (location.hash || "").slice(1) || store.get("tab", "all");
+  if (openAt === "android" || openAt === "apple") { state.tab = "all"; state.sub = openAt; }
+  else state.tab = TABS.includes(openAt) ? openAt : "all";
   render();
   refresh(false);
   setInterval(renderStatus, 60000);

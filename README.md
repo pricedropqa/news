@@ -1,6 +1,6 @@
 # PriceDrop QA News
 
-Android, iPhone and tech news from 11 sites, plus Malayalam news from 5 Kerala sites, in one fast app (PWA).
+Tech news (11 sites), Malayalam news (5), world news (NDTV, BBC, Reuters) and football news (BBC Sport, Sky Sports, The Guardian, ESPN FC) in one fast app (PWA).
 
 Live: **https://pricedropqa.qa/news/**
 
@@ -14,7 +14,7 @@ Edit `feeds.json` and add one line:
 {"id": "sammobile", "name": "SamMobile", "url": "https://www.sammobile.com/feed/", "cat": "android"},
 ```
 
-`cat` is `android`, `apple`, `tech` or `malayalam`. Malayalam sites appear only in the മലയാളം tab. Commit, and the site updates in about a minute.
+`cat` is `android`, `apple` or `tech` (Tech tab), or `malayalam`, `world` or `football` (their own tabs). A site that blocks GitHub can get a `"fallback"` feed, such as a Google News search for that site. Commit, and the site updates in about a minute.
 
 ## Files
 

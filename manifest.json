@@ -1,7 +1,7 @@
 {
   "name": "PriceDrop QA News",
   "short_name": "PD News",
-  "description": "Android, iPhone, tech and Malayalam news from 16 sites, updated every 30 minutes.",
+  "description": "Tech, Malayalam, world and football news from 23 sites, updated every 30 minutes.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

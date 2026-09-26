@@ -14,6 +14,8 @@
   --thumb: #DDE3EA;
   --shadow: 0 1px 2px rgb(17 25 34 / 6%);
   --ml: #9B3468;
+  --world: #0E7480;
+  --football: #9A6400;
   --f-display: "Bricolage Grotesque", "Noto Sans Malayalam", "Segoe UI", system-ui, sans-serif;
   --f-body: "IBM Plex Sans", "Noto Sans Malayalam", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
@@ -24,6 +26,7 @@
     --bg: #0B1016; --surface: #141B23; --ink: #E7ECF2; --ink-2: #B9C3CE; --muted: #8B98A6;
     --line: #242F3A; --accent: #7F97FF; --accent-soft: #1D2748; --on-accent: #0B1016;
     --android: #4DC684; --apple: #A8B3BF; --tech: #EB8F5C; --thumb: #1E2731; --ml: #E283B3;
+    --world: #4CC2CE; --football: #E2A93B;
     --shadow: none; color-scheme: dark;
   }
 }
@@ -31,6 +34,7 @@
   --bg: #0B1016; --surface: #141B23; --ink: #E7ECF2; --ink-2: #B9C3CE; --muted: #8B98A6;
   --line: #242F3A; --accent: #7F97FF; --accent-soft: #1D2748; --on-accent: #0B1016;
   --android: #4DC684; --apple: #A8B3BF; --tech: #EB8F5C; --thumb: #1E2731; --ml: #E283B3;
+  --world: #4CC2CE; --football: #E2A93B;
   --shadow: none; color-scheme: dark;
 }
 
@@ -98,6 +102,13 @@ a { color: var(--accent); }
 .dot.android { background: var(--android); }
 .dot.apple { background: var(--apple); }
 .dot.malayalam { background: var(--ml); }
+.dot.world { background: var(--world); }
+.dot.football { background: var(--football); }
+
+/* Tech tab filter */
+.subnav { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding: 3px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.subnav button { height: 34px; border: 0; border-radius: 9px; background: none; cursor: pointer; font-size: 13.5px; font-weight: 500; color: var(--muted); }
+.subnav button[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
 
 /* Story list */
 .list { display: grid; gap: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; }
