@@ -133,18 +133,36 @@ let previous = { items: [], sources: [] };
 try { previous = JSON.parse(await readFile(new URL("./data/news.json", import.meta.url), "utf8")); } catch {}
 const prevSrc = new Map((previous.sources || []).map((s) => [s.id, s]));
 
-// Reddit rate-limits shared servers after a few requests, so each run refreshes only the
-// REDDIT_PER_RUN subreddits that were updated longest ago; the rest keep their last stories.
-const REDDIT_PER_RUN = 3;
+// Reddit gives shared servers (like GitHub's) a tiny request allowance and says in its
+// x-ratelimit-* headers how long to wait. Each run refreshes the REDDIT_PER_RUN subreddits
+// updated longest ago, waiting as long as Reddit asks between them; the rest keep their last stories.
+const REDDIT_PER_RUN = 4;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+async function redditFetch(url) {
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const res = await fetch(url, { headers: { "User-Agent": UA, Accept: "application/atom+xml, application/xml, */*" } });
+    const reset = Math.min(Number(res.headers.get("x-ratelimit-reset")) || 30, 90);
+    const remaining = Number(res.headers.get("x-ratelimit-remaining") ?? 1);
+    if (res.ok) return { xml: await res.text(), waitMs: (remaining < 1 ? reset + 2 : 3) * 1000 };
+    if (res.status !== 429) throw new Error(`HTTP ${res.status}`);
+    await sleep((reset + 2) * 1000);
+  }
+  throw new Error("HTTP 429");
+}
 async function getRedditFeeds(list) {
   const out = new Map();
-  const due = [...list].sort((a, b) => (prevSrc.get(a.id)?.fetched || 0) - (prevSrc.get(b.id)?.fetched || 0)).slice(0, REDDIT_PER_RUN);
+  const lastTry = (f) => prevSrc.get(f.id)?.tried || prevSrc.get(f.id)?.fetched || 0;
+  const due = [...list].sort((a, b) => lastTry(a) - lastTry(b)).slice(0, REDDIT_PER_RUN);
   for (const f of due) {
-    let res = await getFeed(f);
-    if (res.status !== "ok") { await sleep(15000); res = await getFeed(f); } // one retry after a longer pause
-    out.set(f.id, res);
-    await sleep(6000);
+    try {
+      const { xml, waitMs } = await redditFetch(f.url);
+      const items = parse(xml, f);
+      out.set(f.id, items.length ? { items, status: "ok" } : { items: [], status: "no stories found" });
+      await sleep(waitMs);
+    } catch (e) {
+      out.set(f.id, { items: [], status: String(e.message || e) });
+      if (/HTTP (403|429)/.test(e.message)) break; // Reddit is blocking us for now; try again next run
+    }
   }
   for (const f of list) if (!out.has(f.id)) out.set(f.id, { items: [], status: "skip" });
   return out;
@@ -161,12 +179,13 @@ let all = [];
 feeds.forEach((f, idx) => {
   let { items, status } = results[idx];
   const prev = prevSrc.get(f.id);
-  let fetched = status === "ok" ? Date.now() : prev?.fetched || 0;
+  const fetched = status === "ok" ? Date.now() : prev?.fetched || 0;
+  const tried = status === "skip" ? prev?.tried || prev?.fetched || 0 : Date.now();
   if (!items.length) {
     items = (previous.items || []).filter((it) => it.s === f.id);
     if (status === "skip") status = items.length ? "ok" : "waiting for next update";
   }
-  sources.push({ id: f.id, name: f.name, cat: f.cat, site: f.site || new URL(f.url).origin, status, count: items.length, fetched });
+  sources.push({ id: f.id, name: f.name, cat: f.cat, site: f.site || new URL(f.url).origin, status, count: items.length, fetched, tried });
   all.push(...items);
   console.log(`${status === "ok" ? "✔" : "✖"} ${f.name.padEnd(18)} ${String(items.length).padStart(3)}  ${status}`);
 });
