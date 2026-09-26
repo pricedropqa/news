@@ -1,0 +1,47 @@
+name: Update news and publish
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"   # every 30 minutes
+  push:
+    branches: [main]          # publish right away when you change any file
+  workflow_dispatch:          # "Run workflow" button in the Actions tab
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Fetch RSS feeds
+        run: node fetch-feeds.mjs
+      - name: Make app icons
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq librsvg2-bin
+          rsvg-convert -w 192 -h 192 icon.svg -o icon-192.png
+          rsvg-convert -w 512 -h 512 icon.svg -o icon-512.png
+          rsvg-convert -w 180 -h 180 icon.svg -o apple-touch-icon.png
+      - name: Prepare site folder
+        run: |
+          mkdir -p _site
+          cp -r index.html style.css app.js sw.js manifest.json feeds.json *.png icon.svg data _site/ && touch _site/.nojekyll
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deploy
+        uses: actions/deploy-pages@v4
