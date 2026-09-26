@@ -14,5 +14,5 @@
   {"id": "mathrubhumi", "name": "Mathrubhumi", "url": "https://www.mathrubhumi.com/sitemaps/mathrubhumi/rss", "cat": "malayalam", "site": "https://www.mathrubhumi.com"},
   {"id": "manorama", "name": "Manorama", "url": "https://www.manoramaonline.com/news/latest-news.feeds.rss.xml", "cat": "malayalam", "site": "https://www.manoramaonline.com"},
   {"id": "asianet", "name": "Asianet News", "url": "https://www.asianetnews.com/rss", "cat": "malayalam", "site": "https://www.asianetnews.com"},
-  {"id": "24news", "name": "24 News", "url": "https://www.twentyfournews.com/feed", "cat": "malayalam", "site": "https://www.twentyfournews.com"}
+  {"id": "24news", "name": "24 News", "url": "https://www.twentyfournews.com/feed", "cat": "malayalam", "site": "https://www.twentyfournews.com", "fallback": "https://news.google.com/rss/search?q=site:twentyfournews.com+when:2d&hl=ml&gl=IN&ceid=IN:ml", "trim": "TwentyFour News|24 News"}
 ]

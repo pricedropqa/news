@@ -4,7 +4,7 @@ import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { execFile } from "node:child_process";
 
 const PER_FEED = 30;       // newest stories kept from each site
-const MAX_ITEMS = 400;     // cap for the whole file
+const MAX_ITEMS = 500;     // cap for the whole file
 const MAX_AGE_DAYS = 10;   // drop anything older than this
 
 const ANDROID_RE = /\b(android|pixel|galaxy|samsung|one ?ui|oneplus|xiaomi|redmi|poco|oppo|vivo|realme|honor|huawei|motorola|moto g|nothing phone|qualcomm|snapdragon|wear ?os|chromebook|gemini)\b/i;
@@ -48,8 +48,9 @@ function parse(xml, feed) {
   const items = [];
   const isAtom = /<feed[\s>]/i.test(xml) && !/<rss[\s>]/i.test(xml);
   const blocks = xml.match(isAtom ? /<entry[\s>][\s\S]*?<\/entry>/gi : /<item[\s>][\s\S]*?<\/item>/gi) || [];
-  for (const b of blocks.slice(0, PER_FEED)) {
-    const title = stripHtml(tag(b, "title"));
+  for (const b of blocks.slice(0, 150)) {
+    let title = stripHtml(tag(b, "title"));
+    if (feed.trim) title = title.replace(new RegExp(`\\s*[-|–]\\s*(${feed.trim})\\s*$`, "i"), "");
     let link = isAtom ? (attr(b, 'link[^>]*rel=["\']alternate["\']', "href") || attr(b, "link", "href")) : decode(tag(b, "link"));
     if (!link) link = decode(tag(b, "guid"));
     const date = tag(b, "pubDate") || tag(b, "published") || tag(b, "updated") || tag(b, "dc:date");
@@ -66,7 +67,8 @@ function parse(xml, feed) {
     if (APPLE_RE.test(text)) cats.add("apple");
     items.push({ t: title, l: link, s: feed.id, d: t, x: desc, i: findImage(b, rawHtml), c: [...cats] });
   }
-  return items;
+  // Some feeds are not in date order, so keep the newest ones.
+  return items.sort((a, b) => b.d - a.d).slice(0, PER_FEED);
 }
 
 const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36";
@@ -85,26 +87,35 @@ function curlText(url) {
   });
 }
 
-async function getFeed(feed) {
+async function fetchXml(url) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 20000);
   try {
-    const res = await fetch(feed.url, {
+    const res = await fetch(url, {
       signal: ctrl.signal,
       redirect: "follow",
       headers: { "User-Agent": UA, Accept: "application/rss+xml, application/atom+xml, application/xml, text/xml, */*" },
     });
-    let xml;
-    if (res.ok) xml = await res.text();
-    else xml = await curlText(feed.url).catch(() => { throw new Error(`HTTP ${res.status}`); });
-    const items = parse(xml, feed);
-    if (!items.length) throw new Error("no stories found");
-    return { items, status: "ok" };
-  } catch (e) {
-    return { items: [], status: String(e.message || e).slice(0, 80) };
+    if (res.ok) return await res.text();
+    return await curlText(url).catch(() => { throw new Error(`HTTP ${res.status}`); });
   } finally {
     clearTimeout(timer);
   }
+}
+
+// Tries the site's own feed first, then its "fallback" feed (e.g. Google News) if one is set.
+async function getFeed(feed) {
+  let lastErr;
+  for (const url of [feed.url, feed.fallback].filter(Boolean)) {
+    try {
+      const items = parse(await fetchXml(url), feed);
+      if (!items.length) throw new Error("no stories found");
+      return { items, status: "ok" };
+    } catch (e) {
+      lastErr = e;
+    }
+  }
+  return { items: [], status: String(lastErr?.message || lastErr).slice(0, 80) };
 }
 
 const feeds = JSON.parse(await readFile(new URL("./feeds.json", import.meta.url), "utf8"));
