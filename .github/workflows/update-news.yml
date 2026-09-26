@@ -27,6 +27,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Get the current live news (backup if a site fails this run)
+        run: mkdir -p data && (curl -sfL https://pricedropqa.github.io/news/data/news.json -o data/news.json || true)
       - name: Fetch RSS feeds
         run: node fetch-feeds.mjs
       - name: Make app icons
