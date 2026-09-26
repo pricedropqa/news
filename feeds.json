@@ -1,0 +1,13 @@
+[
+  {"id": "androidpolice", "name": "Android Police", "url": "https://www.androidpolice.com/feed/", "cat": "android"},
+  {"id": "xda", "name": "XDA", "url": "https://www.xda-developers.com/feed/", "cat": "android"},
+  {"id": "9to5google", "name": "9to5Google", "url": "https://9to5google.com/feed/", "cat": "android"},
+  {"id": "androidauth", "name": "Android Authority", "url": "https://www.androidauthority.com/feed/", "cat": "android"},
+  {"id": "9to5mac", "name": "9to5Mac", "url": "https://9to5mac.com/feed/", "cat": "apple"},
+  {"id": "macrumors", "name": "MacRumors", "url": "https://feeds.macrumors.com/MacRumors-All", "cat": "apple"},
+  {"id": "appleinsider", "name": "AppleInsider", "url": "https://appleinsider.com/rss/news/", "cat": "apple"},
+  {"id": "redmondpie", "name": "Redmond Pie", "url": "https://feeds.feedburner.com/RedmondPie", "cat": "apple", "site": "https://www.redmondpie.com"},
+  {"id": "gsmarena", "name": "GSMArena", "url": "https://www.gsmarena.com/rss-news-reviews.php3", "cat": "tech"},
+  {"id": "tomsguide", "name": "Tom's Guide", "url": "https://www.tomsguide.com/feeds/all", "cat": "tech"},
+  {"id": "engadget", "name": "Engadget", "url": "https://www.engadget.com/rss.xml", "cat": "tech"}
+]
