@@ -2,9 +2,9 @@
 (() => {
   "use strict";
   const PAGE = 40;
+  // Our own Cloudflare Worker (cloudflare-worker.js) — it only answers requests from PriceDrop QA sites.
   const PROXIES = [
-    (u) => "https://api.allorigins.win/raw?url=" + encodeURIComponent(u),
-    (u) => "https://corsproxy.io/?url=" + encodeURIComponent(u),
+    (u) => "https://pd-feed-proxy.mathewdev84.workers.dev/?url=" + encodeURIComponent(u),
   ];
   const $ = (id) => document.getElementById(id);
 

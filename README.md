@@ -25,6 +25,7 @@ Edit `feeds.json` and add one line:
 | `fetch-feeds.mjs` | Reads all RSS feeds and writes `data/news.json` |
 | `.github/workflows/update-news.yml` | Runs every 30 min, builds icons, publishes the site |
 | `sw.js`, `manifest.json`, `icon.svg` | Install-as-app + offline support |
+| `cloudflare-worker.js` | Copy of the feed proxy running at pd-feed-proxy.mathewdev84.workers.dev (used when someone adds their own feed in the Sites tab) |
 
 If GitHub pauses the 30-minute schedule after 60 days without commits, open **Actions → Update news and publish → Run workflow** once.
 
