@@ -26,6 +26,7 @@
   {"id": "r-android", "name": "r/Android", "url": "https://www.reddit.com/r/Android/.rss", "cat": "android", "site": "https://www.reddit.com/r/Android", "reddit": true},
   {"id": "r-googlepixel", "name": "r/GooglePixel", "url": "https://www.reddit.com/r/GooglePixel/.rss", "cat": "android", "site": "https://www.reddit.com/r/GooglePixel", "reddit": true},
   {"id": "r-samsung", "name": "r/samsung", "url": "https://www.reddit.com/r/samsung/.rss", "cat": "android", "site": "https://www.reddit.com/r/samsung", "reddit": true},
+  {"id": "r-galaxyfold", "name": "r/GalaxyFold", "url": "https://www.reddit.com/r/GalaxyFold/.rss", "cat": "android", "site": "https://www.reddit.com/r/GalaxyFold", "reddit": true},
   {"id": "r-apple", "name": "r/apple", "url": "https://www.reddit.com/r/apple/.rss", "cat": "apple", "site": "https://www.reddit.com/r/apple", "reddit": true},
   {"id": "r-iphone", "name": "r/iphone", "url": "https://www.reddit.com/r/iphone/.rss", "cat": "apple", "site": "https://www.reddit.com/r/iphone", "reddit": true},
   {"id": "r-gadgets", "name": "r/gadgets", "url": "https://www.reddit.com/r/gadgets/.rss", "cat": "tech", "site": "https://www.reddit.com/r/gadgets", "reddit": true},
