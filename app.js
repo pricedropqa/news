@@ -93,16 +93,28 @@
     }).filter((it) => it.t && /^https?:/.test(it.l));
   }
 
-  async function loadCustomFeed(feed) {
+  async function fetchViaProxy(url) {
     let lastErr;
     for (const p of PROXIES) {
       try {
-        const res = await fetch(p(feed.url));
+        const res = await fetch(p(url));
         if (!res.ok) throw new Error("HTTP " + res.status);
-        return parseXml(await res.text(), feed);
+        return await res.text();
       } catch (e) { lastErr = e; }
     }
     throw lastErr;
+  }
+
+  // Accepts a feed link, or a normal website address: then it looks for the site's
+  // <link rel="alternate" type="application/rss+xml"> and uses that feed instead.
+  async function loadCustomFeed(feed) {
+    const text = await fetchViaProxy(feed.url);
+    if (/<(rss|feed|rdf:RDF)[\s>]/i.test(text.slice(0, 2000))) return parseXml(text, feed);
+    const doc = new DOMParser().parseFromString(text, "text/html");
+    const link = doc.querySelector('link[rel~="alternate"][type*="rss"], link[rel~="alternate"][type*="atom"]');
+    if (!link) throw new Error("no RSS feed found on that page");
+    feed.url = new URL(link.getAttribute("href"), feed.url).href;
+    return parseXml(await fetchViaProxy(feed.url), feed);
   }
 
   async function loadCustom() {
@@ -348,9 +360,14 @@
     const url = $("addUrl").value.trim();
     const cat = $("addCat").value;
     const msg = $("addMsg");
-    if (state.custom.some((c) => c.url === url) || state.data.sources.some((s) => s.site && url.startsWith(s.site) && /feed|rss/i.test(url))) {
-      msg.textContent = "That site is already in your list."; return;
+    const host = (u) => { try { return new URL(u).hostname.replace(/^www\./, ""); } catch { return ""; } };
+    const TAB_NAMES = { android: "Tech", apple: "Tech", tech: "Tech", malayalam: "മലയാളം", world: "World", football: "Football" };
+    const builtIn = state.data.sources.find((s) => s.site && host(s.site) === host(url) && !/reddit\.com/.test(url));
+    if (builtIn) {
+      msg.textContent = `${builtIn.name} is already in the app, in the ${TAB_NAMES[builtIn.cat] || "Tech"} tab. If it's hidden, switch it on in the list above.`;
+      return;
     }
+    if (state.custom.some((c) => c.url === url)) { msg.textContent = "That feed is already in your list."; return; }
     const feed = { id: hash(url), name, url, cat };
     msg.textContent = "Checking the feed…";
     try {
@@ -363,7 +380,7 @@
       e.target.reset();
       renderSources(); renderStatus();
     } catch (err) {
-      msg.textContent = `Couldn't read that feed (${err.message || "error"}). Check the link — it usually ends in /feed/ or .xml.`;
+      msg.textContent = `Couldn't read that site (${err.message || "error"}). Try its feed link — it usually ends in /feed/ or .xml.`;
     }
   });
 
