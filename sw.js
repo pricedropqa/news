@@ -1,5 +1,5 @@
-// Offline support: app shell is cached; news.json is network-first with cached fallback.
-const CACHE = "pdnews-v5";
+// Offline support: app shell is cached; news.json and ott.json are network-first with cached fallback.
+const CACHE = "pdnews-v6";
 const SHELL = ["./", "index.html", "style.css", "app.js", "manifest.json", "icon.svg", "icon-192.png"];
 
 self.addEventListener("install", (e) => {
@@ -18,6 +18,16 @@ self.addEventListener("fetch", (e) => {
         caches.open(CACHE).then((c) => c.put("data/news.json", copy));
         return res;
       }).catch(() => caches.match("data/news.json"))
+    );
+    return;
+  }
+  if (url.pathname.endsWith("/data/ott.json")) {
+    e.respondWith(
+      fetch(e.request).then((res) => {
+        const copy = res.clone();
+        caches.open(CACHE).then((c) => c.put("data/ott.json", copy));
+        return res;
+      }).catch(() => caches.match("data/ott.json"))
     );
     return;
   }

@@ -1,14 +1,23 @@
 // Fetches every feed in feeds.json and writes data/news.json.
 // No dependencies — runs on Node 18+ (GitHub Actions uses Node 22).
-import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { readFile, writeFile, mkdir, copyFile } from "node:fs/promises";
 import { execFile } from "node:child_process";
 
 const PER_FEED = 30;       // newest stories kept from each site
-const MAX_ITEMS = 1000;     // cap for the whole file
+const MAX_ITEMS = 1200;     // cap for the whole file
 const MAX_AGE_DAYS = 10;   // drop anything older than this
 
 const ANDROID_RE = /\b(android|pixel|galaxy|samsung|one ?ui|oneplus|xiaomi|redmi|poco|oppo|vivo|realme|honor|huawei|motorola|moto g|nothing phone|qualcomm|snapdragon|wear ?os|chromebook|gemini)\b/i;
 const APPLE_RE = /\b(iphone|ipad|ios|ipados|macos|apple|mac|macbook|imac|airpods|apple watch|watchos|vision pro|siri|app store)\b/i;
+
+// OTT tab: stories are tagged by language so the tab can filter them.
+const OTT_LANGS = [
+  ["ott-ml", /\b(malayalam|mollywood|manorama ?max)\b/i],
+  ["ott-ta", /\b(tamil|kollywood)\b/i],
+  ["ott-hi", /\b(hindi|bollywood)\b/i],
+  ["ott-en", /\b(english|hollywood)\b/i],
+];
+const OTT_OTHER_RE = /\b(telugu|tollywood|kannada|sandalwood|bengali|marathi|punjabi|gujarati|bhojpuri|korean|k-drama|anime)\b/i;
 
 const ENT = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " ", hellip: "…", mdash: "—", ndash: "–", rsquo: "’", lsquo: "‘", rdquo: "”", ldquo: "“" };
 const decode = (s = "") =>
@@ -71,9 +80,18 @@ function parse(xml, feed) {
     const t = parseDate(date) || Date.now();
     if (!title || !/^https?:\/\//.test(link)) continue;
     const text = `${title} ${desc}`;
+    if (feed.match && !new RegExp(feed.match, "i").test(text)) continue; // feed keeps only matching stories
+    if (feed.skip && new RegExp(feed.skip, "i").test(text)) continue;    // feed drops matching stories
     const cats = new Set([feed.cat]);
-    if (ANDROID_RE.test(text)) cats.add("android");
-    if (APPLE_RE.test(text)) cats.add("apple");
+    if (feed.cat === "ott") {
+      const langs = OTT_LANGS.filter(([, re]) => re.test(text)).map(([k]) => k);
+      if (!langs.length && OTT_OTHER_RE.test(title)) continue; // only about a language we don't follow
+      if (feed.lang) langs.push(feed.lang);
+      langs.forEach((k) => cats.add(k));
+    } else {
+      if (ANDROID_RE.test(text)) cats.add("android");
+      if (APPLE_RE.test(text)) cats.add("apple");
+    }
     items.push({ t: title, l: link, s: feed.id, d: t, x: desc, i: findImage(b, rawHtml), c: [...cats] });
   }
   // Some feeds are not in date order, so keep the newest ones.
@@ -208,4 +226,6 @@ for (const src of sources) src.count = counts[src.id] || 0;
 
 await mkdir(new URL("./data/", import.meta.url), { recursive: true });
 await writeFile(new URL("./data/news.json", import.meta.url), JSON.stringify({ updated: Date.now(), sources, items: all }));
+// OTT release dates: publish ott.json next to the news so the app can read it.
+await copyFile(new URL("./ott.json", import.meta.url), new URL("./data/ott.json", import.meta.url)).catch(() => console.log("ott.json not found, skipped"));
 console.log(`\nWrote ${all.length} stories from ${sources.filter((s) => s.status === "ok").length}/${feeds.length} sources.`);

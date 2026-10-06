@@ -16,6 +16,8 @@
 
   const state = {
     data: { updated: 0, sources: [], items: [] },
+    ott: { updated: 0, releases: [] },        // release dates from ott.json
+    ottOpen: { out: true, soon: true, exp: false },
     custom: store.get("custom", []),          // [{id,name,url,cat}]
     customItems: [],
     customStatus: {},
@@ -23,7 +25,7 @@
     saved: store.get("saved", []),            // full item objects
     read: new Set(store.get("read", [])),
     tab: "all",
-    sub: "",          // Tech tab filter: "", "android" or "apple"
+    sub: "",          // Tech tab filter ("android", "apple") or OTT language ("ott-ml", "ott-ta", "ott-hi", "ott-en")
     source: "",
     q: "",
     shown: PAGE,
@@ -71,6 +73,16 @@
     const res = await fetch("data/news.json?v=" + Math.floor(Date.now() / 60000), { cache: "no-store" });
     if (!res.ok) throw new Error("HTTP " + res.status);
     state.data = await res.json();
+  }
+
+  // Release dates for the OTT tab (ott.json, published as data/ott.json). If it fails, the tab still shows the headlines.
+  async function loadOtt() {
+    try {
+      const res = await fetch("data/ott.json?v=" + Math.floor(Date.now() / 60000), { cache: "no-store" });
+      if (!res.ok) return;
+      const j = await res.json();
+      if (j && Array.isArray(j.releases)) state.ott = j;
+    } catch {}
   }
 
   function parseXml(text, feed) {
@@ -130,7 +142,7 @@
     btn.classList.add("spin");
     if (!state.data.items.length) renderSkeleton();
     try {
-      await Promise.all([loadMain().catch((e) => { if (!state.data.items.length) throw e; }), loadCustom()]);
+      await Promise.all([loadMain().catch((e) => { if (!state.data.items.length) throw e; }), loadCustom(), loadOtt()]);
       if (manual) toast("News updated");
     } catch (e) {
       if (!state.data.items.length && !state.customItems.length) {
@@ -145,11 +157,11 @@
 
   // ---------- filtering ----------
   // The Tech tab ("all") shows tech sites only; each section has its own tab.
-  const SECTIONS = ["malayalam", "world", "football"];
+  const SECTIONS = ["malayalam", "world", "football", "ott"];
   const TABS = ["all", ...SECTIONS, "saved", "sources"];
   function inTab(it) {
     const c = it.c || [];
-    if (SECTIONS.includes(state.tab)) return c.includes(state.tab);
+    if (SECTIONS.includes(state.tab)) return c.includes(state.tab) && (!state.sub || c.includes(state.sub));
     if (state.tab === "all") {
       if (c.some((x) => SECTIONS.includes(x))) return false;
       return !state.sub || c.includes(state.sub);
@@ -229,6 +241,7 @@
       $("list").innerHTML = "";
       $("moreBtn").hidden = true;
       if (state.tab === "saved") showEmpty("No saved stories yet", "Tap the bookmark on any story to read it later.");
+      else if (state.tab === "ott" && !state.q && !state.source && !$("ottBox").hidden) { /* release dates are showing */ }
       else if (state.q) showEmpty("No matches", `Nothing found for “${state.q}”. Try a shorter word.`);
       else if (state.data.items.length) showEmpty("Nothing here", "Turn some sites back on in the Sites tab.");
       return;
@@ -253,6 +266,54 @@
     more.textContent = `Show more stories (${list.length - slice.length} left)`;
   }
 
+  // ---------- OTT release dates ----------
+  const OTT_LANG = { "ott-ml": "Malayalam", "ott-ta": "Tamil", "ott-hi": "Hindi", "ott-en": "English" };
+  const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const parseDay = (s) => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || ""); return m ? new Date(+m[1], +m[2] - 1, +m[3]).getTime() : 0; };
+
+  function relHtml(r, today) {
+    const d = r.day ? new Date(r.day) : null;
+    const date = d
+      ? `<div class="rel-date${r.day === today ? " today" : ""}"><b>${d.getDate()}</b><span>${MONTHS[d.getMonth()]}</span></div>`
+      : `<div class="rel-date tba"><span>Date</span><span>TBA</span></div>`;
+    const plats = (r.platforms || []).join(", ") || "Platform not announced";
+    const bits = [r.lang, r.type].filter(Boolean).join(" · ");
+    const dubs = (r.dubs || []).length ? ` · also ${r.dubs.join(", ")}` : "";
+    const body = `${date}<div class="rel-body"><h3>${esc(r.title)}</h3><p class="rel-plat">${esc(plats)}</p><p>${esc(bits + dubs)}${r.note ? `${bits || dubs ? " · " : ""}${esc(r.note)}` : ""}</p></div>`;
+    return /^https?:\/\//.test(r.link || "")
+      ? `<a class="rel" href="${esc(r.link)}" target="_blank" rel="noopener">${body}</a>`
+      : `<div class="rel">${body}</div>`;
+  }
+
+  function renderOtt() {
+    const box = $("ottBox");
+    const on = state.tab === "ott" && !state.source;
+    if (!on) { box.hidden = true; return; }
+    const today = (() => { const n = new Date(); return new Date(n.getFullYear(), n.getMonth(), n.getDate()).getTime(); })();
+    const week = today - 7 * 864e5;
+    const lang = (OTT_LANG[state.sub] || "").toLowerCase();
+    const words = state.q.toLowerCase().split(/\s+/).filter(Boolean);
+    const rows = (state.ott.releases || []).map((r) => ({ ...r, day: parseDay(r.date) })).filter((r) => {
+      if (!r.title) return false;
+      if (lang && ![r.lang, ...(r.dubs || [])].some((l) => String(l || "").toLowerCase() === lang)) return false;
+      const hay = [r.title, r.lang, r.type, (r.platforms || []).join(" "), (r.dubs || []).join(" "), r.note].join(" ").toLowerCase();
+      return words.every((w) => hay.includes(w));
+    });
+    const expected = (r) => r.status === "expected";
+    const groups = [
+      ["out", "Now streaming", rows.filter((r) => !expected(r) && r.day && r.day <= today && r.day >= week).sort((a, b) => b.day - a.day)],
+      ["soon", "Coming soon", rows.filter((r) => !expected(r) && r.day > today).sort((a, b) => a.day - b.day)],
+      ["exp", "Expected, not confirmed", rows.filter((r) => expected(r) && (!r.day || r.day >= week)).sort((a, b) => (a.day || 9e15) - (b.day || 9e15))],
+    ].filter((g) => g[2].length);
+    if (!groups.length) { box.hidden = true; return; }
+    box.hidden = false;
+    box.innerHTML =
+      `<div class="rel-head"><h2>Release dates</h2><span>${state.ott.updated ? "Checked " + ago(state.ott.updated) : ""}</span></div>` +
+      groups.map(([key, label, list]) =>
+        `<details class="rel-group" data-group="${key}"${state.ottOpen[key] || words.length ? " open" : ""}><summary>${label} <span class="n">${list.length}</span></summary>${list.map((r) => relHtml(r, today)).join("")}</details>`).join("") +
+      `<p class="rel-foot">Dates are for India. What you can watch in Qatar may differ.</p>`;
+  }
+
   function renderSources() {
     $("sourceList").innerHTML = allSources().map((s) => {
       const ok = s.status === "ok";
@@ -273,15 +334,17 @@
     $("sourcesView").hidden = !isSources;
     $("controls").hidden = isSources;
     $("subnav").hidden = state.tab !== "all";
+    $("ottnav").hidden = state.tab !== "ott";
+    $("search").placeholder = state.tab === "ott" ? "Search: Netflix, ZEE5, Khalifa…" : "Search: Galaxy S26, iPhone 18, Pixel…";
     document.querySelectorAll(".tabs button").forEach((b) => b.classList.toggle("active", b.dataset.tab === state.tab));
-    document.querySelectorAll("#subnav button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.sub === state.sub)));
-    if (isSources) renderSources();
-    else { renderChips(); renderList(); }
+    document.querySelectorAll(".subnav button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.sub === state.sub)));
+    if (isSources) { $("ottBox").hidden = true; renderSources(); }
+    else { renderChips(); renderOtt(); renderList(); }
   }
 
   // ---------- events ----------
   function setTab(tab, sub = "") {
-    state.tab = tab; state.sub = tab === "all" ? sub : ""; state.shown = PAGE; state.source = "";
+    state.tab = tab; state.sub = tab === "all" || tab === "ott" ? sub : ""; state.shown = PAGE; state.source = "";
     store.set("tab", state.sub || tab);
     try { history.replaceState(null, "", "#" + (state.sub || tab)); } catch {}
     render();
@@ -293,6 +356,16 @@
     if (b) setTab("all", b.dataset.sub);
   });
 
+  $("ottnav").addEventListener("click", (e) => {
+    const b = e.target.closest("button[data-sub]");
+    if (b) setTab("ott", b.dataset.sub);
+  });
+  // Remember which release-date groups are open (the toggle event doesn't bubble, so listen in capture).
+  $("ottBox").addEventListener("toggle", (e) => {
+    const g = e.target && e.target.dataset && e.target.dataset.group;
+    if (g && !state.q) state.ottOpen[g] = e.target.open;
+  }, true);
+
   document.querySelector(".tabs").addEventListener("click", (e) => {
     const b = e.target.closest("button[data-tab]");
     if (b) setTab(b.dataset.tab);
@@ -303,13 +376,13 @@
     if (!b) return;
     state.source = state.source === b.dataset.src ? "" : b.dataset.src;
     state.shown = PAGE;
-    renderChips(); renderList();
+    renderChips(); renderOtt(); renderList();
   });
 
   let qTimer;
   $("search").addEventListener("input", (e) => {
     clearTimeout(qTimer);
-    qTimer = setTimeout(() => { state.q = e.target.value.trim(); state.shown = PAGE; renderList(); }, 150);
+    qTimer = setTimeout(() => { state.q = e.target.value.trim(); state.shown = PAGE; renderOtt(); renderList(); }, 150);
   });
 
   $("moreBtn").addEventListener("click", () => { state.shown += PAGE; renderList(); });
@@ -361,7 +434,7 @@
     const cat = $("addCat").value;
     const msg = $("addMsg");
     const host = (u) => { try { return new URL(u).hostname.replace(/^www\./, ""); } catch { return ""; } };
-    const TAB_NAMES = { android: "Tech", apple: "Tech", tech: "Tech", malayalam: "മലയാളം", world: "World", football: "Football" };
+    const TAB_NAMES = { android: "Tech", apple: "Tech", tech: "Tech", malayalam: "മലയാളം", world: "World", football: "Football", ott: "OTT" };
     const builtIn = state.data.sources.find((s) => s.site && host(s.site) === host(url) && !/reddit\.com/.test(url));
     if (builtIn) {
       msg.textContent = `${builtIn.name} is already in the app, in the ${TAB_NAMES[builtIn.cat] || "Tech"} tab. If it's hidden, switch it on in the list above.`;
@@ -405,6 +478,7 @@
   // Start (#android and #apple open the Tech tab with that filter)
   const openAt = (location.hash || "").slice(1) || store.get("tab", "all");
   if (openAt === "android" || openAt === "apple") { state.tab = "all"; state.sub = openAt; }
+  else if (OTT_LANG[openAt]) { state.tab = "ott"; state.sub = openAt; }
   else state.tab = TABS.includes(openAt) ? openAt : "all";
   render();
   refresh(false);
