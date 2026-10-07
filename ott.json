@@ -1,5 +1,5 @@
 {
-  "updated": 1791396065684,
+  "updated": 1791403722071,
   "releases": [
     {"title":"Panthadikkaam","lang":"Malayalam","type":"Series","platforms":["ZEE5"],"date":"2026-10-01","status":"confirmed","note":"Docu-series","link":"https://www.keralatv.in/october-2026-ott-releases/"},
     {"title":"Sardar 2","lang":"Tamil","type":"Movie","platforms":["Prime Video"],"date":"2026-10-01","status":"confirmed","dubs":["Malayalam","Hindi"],"link":"https://www.esquireindia.co.in/entertainment/what-to-stream/5-new-friday-south-indian-ott-releases-oct-2-2026-bethlehem-kudumba-unit-love-mother-promise-sardar-2-jiohotstar-netflix-zee5-prime-video"},
@@ -32,6 +32,7 @@
     {"title":"Dorothy","lang":"Tamil","type":"Movie","platforms":["Netflix"],"date":"2026-10-23","status":"expected","note":"Reported, not official","link":"https://www.filmibeat.com/tamil/news/2026/dorothy-ott-release-date-update-when-where-to-watch-keerthy-suresh-sananth-rishikanth-film-online-533605.html"},
     {"title":"Akka","lang":"Hindi","type":"Series","platforms":["Netflix"],"date":"2026-10-30","status":"confirmed","link":"https://www.hollywoodreporterindia.com/features/insight/akka-keerthy-suresh-and-radhika-aptes-netflix-gangster-series-gets-october-premiere-date"},
     {"title":"Love Always","lang":"Tamil","type":"Series","platforms":["JioHotstar"],"date":"2026-10-30","status":"confirmed","dubs":["Malayalam","Hindi"],"link":"https://www.dtnext.in/entertainment/cinema/love-always-teaser-of-indias-first-korean-webtoon-adaptation-out"},
+    {"title":"Sigma","lang":"Tamil","type":"Movie","platforms":["Netflix"],"date":"2026-10-30","status":"expected","note":"Reported, not official","link":"https://cineulagam.com/article/october-2026-ott-movie-releases-1790577954"},
     {"title":"Avarachan & Sons","lang":"Malayalam","type":"Movie","platforms":["Netflix"],"date":"","status":"expected","link":"https://www.keralatv.in/october-2026-ott-releases/"},
     {"title":"Dhoomakethu","lang":"Malayalam","type":"Movie","platforms":["Netflix"],"date":"","status":"expected","link":"https://www.keralatv.in/dhoomakethu-movie-ott-release-date-netflix/"},
     {"title":"Aaram","lang":"Malayalam","type":"Movie","platforms":["SonyLIV"],"date":"","status":"expected","link":"https://www.keralatv.in/october-2026-ott-releases/"},
@@ -39,7 +40,6 @@
     {"title":"I'm Game","lang":"Malayalam","type":"Movie","platforms":[],"date":"","status":"expected","link":"https://www.keralatv.in/october-2026-ott-releases/"},
     {"title":"Bandra","lang":"Malayalam","type":"Movie","platforms":["ZEE5"],"date":"","status":"expected","link":"https://www.filmibeat.com/malayalam/news/2026/bandra-ott-release-when-where-to-watch-dileep-and-tamannaah-bhatia-film-online-529599.html"},
     {"title":"Baththa","lang":"Tamil","type":"Movie","platforms":["Netflix"],"date":"","status":"expected","note":"Platform reported, not official","link":"https://esquireindia.co.in/entertainment/at-the-movies/baththa-ott-release-vijay-sethupathis-film-to-stream-on-this-platform-after-theatrical-run"},
-    {"title":"Sigma","lang":"Tamil","type":"Movie","platforms":["Netflix"],"date":"","status":"expected","note":"Platform reported, not official","link":"https://www.filmibeat.com/tamil/news/2026/sigma-ott-release-where-to-watch-sundeep-kishan-faria-abdullah-film-after-its-theatrical-run-533589.html"},
     {"title":"Enna Vilai","lang":"Tamil","type":"Movie","platforms":["Netflix"],"date":"","status":"expected","link":"https://www.keralatv.in/enna-vilai-movie-release-date-netflix/"},
     {"title":"Drishyam 3","lang":"Hindi","type":"Movie","platforms":["Netflix"],"date":"","status":"expected","note":"After theatrical run","link":"https://www.esquireindia.co.in/entertainment/what-to-stream/drishyam-3-ott-release-ajay-devgn-film-stream-netflix-box-office-collection-story-and-plot-tabu-shriya-saran-rajat-kapoor"}
   ]
