@@ -1,10 +1,6 @@
 {
-  "updated": 1791576428129,
+  "updated": 1791605245425,
   "releases": [
-    {"title":"Bethlehem Kudumba Unit","lang":"Malayalam","type":"Movie","platforms":["JioHotstar"],"date":"2026-10-02","status":"confirmed","dubs":["Tamil","Hindi"],"link":"https://www.keralatv.in/october-2026-ott-releases/"},
-    {"title":"Antappante Athbudha Pravarthikal","lang":"Malayalam","type":"Movie","platforms":["ManoramaMAX"],"date":"2026-10-02","status":"confirmed","link":"https://www.keralatv.in/october-2026-ott-releases/"},
-    {"title":"#Love","lang":"Tamil","type":"Series","platforms":["Netflix"],"date":"2026-10-02","status":"confirmed","link":"https://www.filmibeat.com/top-listing/new-ott-releases-this-week-in-tamil-2026-netflix-aha-prime-video-sunnxt-zee5-jiohotstar-and-sonyliv-5-1080.html"},
-    {"title":"Pooja Meri Jaan","lang":"Hindi","type":"Movie","platforms":["ZEE5"],"date":"2026-10-02","status":"confirmed","link":"https://www.myvi.in/blog/ott-releases-this-week"},
     {"title":"Promise","lang":"Tamil","type":"Movie","platforms":["Prime Video"],"date":"2026-10-06","status":"confirmed","link":"https://www.keralatv.in/october-2026-ott-releases/"},
     {"title":"Spider-Man: Brand New Day","lang":"English","type":"Movie","platforms":["Prime Video (rental)"],"date":"2026-10-06","status":"confirmed","dubs":["Tamil","Hindi"],"note":"Rental","link":"https://www.ottrelease.com/news/spider-man-brand-new-day-coming-to-prime-video-india-rental-starts-october-6.html"},
     {"title":"Carrie","lang":"English","type":"Series","platforms":["Prime Video"],"date":"2026-10-07","status":"confirmed","dubs":["Tamil","Malayalam","Hindi"],"link":"https://www.ottrelease.com/news/this-week-ott-releases-spider-man-mortal-kombat-ii-khalifa-carrie-and-more-movies-series-to-watch.html"},
@@ -19,6 +15,8 @@
     {"title":"Reporting Live","lang":"Hindi","type":"Movie","platforms":["Netflix"],"date":"2026-10-09","status":"confirmed","link":"https://ottweek.com/language/hindi"},
     {"title":"Animals","lang":"English","type":"Movie","platforms":["Netflix"],"date":"2026-10-09","status":"confirmed","link":"https://www.esquireindia.co.in/entertainment/what-to-stream/october-2026-ott-releases-complete-guide-to-new-movies-and-shows-on-netflix-prime-video-zee5-more"},
     {"title":"Awarapan 2","lang":"Hindi","type":"Movie","platforms":["Prime Video"],"date":"2026-10-09","status":"confirmed","note":"Now on subscription; on rent since Sep 25","link":"https://www.cinemapluz.com/emraan-hashmi-and-disha-patani-starrer-awarapan-2-now-streaming-on-prime-video/"},
+    {"title":"Disclosure Day","lang":"English","type":"Movie","platforms":["JioHotstar"],"date":"2026-10-12","status":"confirmed","dubs":["Hindi"],"note":"Subscription premiere","link":"https://www.newsbytesapp.com/news/entertainment/steven-spielberg-s-disclosure-day-ott-release-details/story"},
+    {"title":"Tyson","lang":"English","type":"Series","platforms":["Netflix"],"date":"2026-10-13","status":"confirmed","note":"Docuseries","link":"https://www.whats-on-netflix.com/news/mike-tyson-docuseries-release-date-netflix/"},
     {"title":"VisionQuest","lang":"English","type":"Series","platforms":["JioHotstar"],"date":"2026-10-14","status":"confirmed","note":"Marvel miniseries","link":"https://www.pinkvilla.com/entertainment/hollywood/visionquest-ott-release-when-and-where-to-watch-paul-bettany-james-spader-starrer-miniseries-online-1405719"},
     {"title":"Kappi Squad","lang":"Malayalam","type":"Series","platforms":["JioHotstar"],"date":"2026-10-15","status":"confirmed","dubs":["Tamil","Hindi"],"link":"https://www.indiatvnews.com/entertainment/ott/kappi-squad-gets-ott-release-date-know-when-and-where-to-watch-rinosh-george-and-sreejith-babu-show-online-2026-09-27-1055415"},
     {"title":"It's a Medical Miracle","lang":"Malayalam","type":"Movie","platforms":["ManoramaMAX","Simply South"],"date":"2026-10-15","status":"confirmed","link":"https://www.filmibeat.com/malayalam/news/2026/its-a-medical-miracle-ott-release-date-when-where-watch-sangeeth-prathap-sharaf-u-dheen-film-online-533551.html"},
