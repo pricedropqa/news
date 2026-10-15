@@ -1,8 +1,6 @@
 {
-  "updated": 1792007665290,
+  "updated": 1792036779330,
   "releases": [
-    {"title":"Carrie","lang":"English","type":"Series","platforms":["Prime Video"],"date":"2026-10-07","status":"confirmed","dubs":["Tamil","Malayalam","Hindi"],"link":"https://www.ottrelease.com/news/this-week-ott-releases-spider-man-mortal-kombat-ii-khalifa-carrie-and-more-movies-series-to-watch.html"},
-    {"title":"Ishqa Ishqa","lang":"Hindi","type":"Series","platforms":["Prime Video","MX Player"],"date":"2026-10-07","status":"confirmed","link":"https://telanganatoday.com/ott-releases-this-week-23-films-and-series-to-stream-from-october-5-to-11"},
     {"title":"Mandaadi","lang":"Tamil","type":"Movie","platforms":["Netflix"],"date":"2026-10-08","status":"confirmed","dubs":["Malayalam","Hindi"],"link":"https://www.keralatv.in/mandaadi-ott-release-date-netflix-revealed/"},
     {"title":"Mortal Kombat II","lang":"English","type":"Movie","platforms":["JioHotstar"],"date":"2026-10-08","status":"confirmed","dubs":["Tamil","Hindi"],"link":"https://www.ottrelease.com/news/this-week-ott-releases-spider-man-mortal-kombat-ii-khalifa-carrie-and-more-movies-series-to-watch.html"},
     {"title":"Khalifa","lang":"Malayalam","type":"Movie","platforms":["ManoramaMAX","Prime Video","Simply South","Aha","Lionsgate Play"],"date":"2026-10-09","status":"confirmed","dubs":["Tamil","Hindi"],"note":"Also STARZPLAY (MENA)","link":"https://www.keralatv.in/khalifa-ott-release-date-and-platforms/"},
@@ -29,6 +27,7 @@
     {"title":"Masterplan","lang":"English","type":"Movie","platforms":["Prime Video"],"date":"2026-10-16","status":"confirmed","note":"Stanley Tucci heist film","link":"https://www.aboutamazon.com/news/entertainment/masterplan-stanley-tucci-prime-video","dubs":["Hindi","Tamil","Malayalam"]},
     {"title":"Jeet Ki Zid","lang":"Hindi","type":"Series","platforms":["ZEE5"],"date":"2026-10-16","status":"expected","link":"https://ottrelease.com/news/this-week-ott-releases-enna-vilai-tyson-final-destination-bloodlines-more-to-watch-from-october-12-to-18.html"},
     {"title":"Evil Dead Burn","lang":"English","type":"Movie","platforms":["Netflix"],"date":"2026-10-16","status":"expected","link":"https://ottrelease.com/news/this-week-ott-releases-enna-vilai-tyson-final-destination-bloodlines-more-to-watch-from-october-12-to-18.html"},
+    {"title":"I'm Game","lang":"Malayalam","type":"Movie","platforms":["JioHotstar"],"date":"2026-10-16","status":"expected","link":"https://www.esquireindia.co.in/entertainment/what-to-stream/im-game-ott-release-when-and-where-to-watch-dulquer-salmaans-action-thriller-online","note":"Reported, not official"},
     {"title":"The Terminal List Season 2","lang":"English","type":"Series","platforms":["Prime Video"],"date":"2026-10-21","status":"confirmed","link":"https://www.esquireindia.co.in/entertainment/what-to-stream/october-2026-ott-releases-complete-guide-to-new-movies-and-shows-on-netflix-prime-video-zee5-more"},
     {"title":"Nobody Wants This Season 3","lang":"English","type":"Series","platforms":["Netflix"],"date":"2026-10-22","status":"confirmed","link":"https://www.binged.com/ott-analysis/netflix-october-2026-release-calendar-has-one-hidden-desi-title/"},
     {"title":"Sattamum Needhiyum Season 2","lang":"Tamil","type":"Series","platforms":["ZEE5"],"date":"2026-10-23","status":"confirmed","link":"https://www.medianews4u.com/tamil-zee5-announces-premiere-of-sattamum-needhiyum-season-2-on-october-23/"},
@@ -43,7 +42,6 @@
     {"title":"Anbil Avan","lang":"Tamil","type":"Movie","platforms":["SonyLIV"],"date":"","status":"expected","note":"Rights acquired; theatrical first","link":"https://www.keralatv.in/channel/ott/"},
     {"title":"Aaram","lang":"Malayalam","type":"Movie","platforms":["SonyLIV"],"date":"","status":"expected","link":"https://www.keralatv.in/october-2026-ott-releases/"},
     {"title":"The Third Murder","lang":"Malayalam","type":"Movie","platforms":["ManoramaMAX"],"date":"","status":"expected","note":"Rights acquired","link":"https://www.keralatv.in/the-third-murder-satellite-and-ott-rights/"},
-    {"title":"I'm Game","lang":"Malayalam","type":"Movie","platforms":[],"date":"","status":"expected","link":"https://www.keralatv.in/october-2026-ott-releases/"},
     {"title":"Bandra","lang":"Malayalam","type":"Movie","platforms":["ZEE5"],"date":"","status":"expected","link":"https://www.filmibeat.com/malayalam/news/2026/bandra-ott-release-when-where-to-watch-dileep-and-tamannaah-bhatia-film-online-529599.html"},
     {"title":"Drishyam 3","lang":"Hindi","type":"Movie","platforms":["Netflix"],"date":"","status":"expected","note":"After theatrical run","link":"https://www.esquireindia.co.in/entertainment/what-to-stream/drishyam-3-ott-release-ajay-devgn-film-stream-netflix-box-office-collection-story-and-plot-tabu-shriya-saran-rajat-kapoor"}
   ]
