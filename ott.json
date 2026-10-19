@@ -1,5 +1,5 @@
 {
-  "updated": 1792353646751,
+  "updated": 1792382405526,
   "releases": [
     {"title":"Disclosure Day","lang":"English","type":"Movie","platforms":["JioHotstar"],"date":"2026-10-12","status":"confirmed","dubs":["Hindi"],"note":"Subscription premiere","link":"https://www.newsbytesapp.com/news/entertainment/steven-spielberg-s-disclosure-day-ott-release-details/story"},
     {"title":"Tyson","lang":"English","type":"Series","platforms":["Netflix"],"date":"2026-10-13","status":"confirmed","note":"Docuseries","link":"https://www.whats-on-netflix.com/news/mike-tyson-docuseries-release-date-netflix/","dubs":["Tamil","Hindi"]},
@@ -43,7 +43,6 @@
     {"title":"Aaram","lang":"Malayalam","type":"Movie","platforms":["SonyLIV"],"date":"","status":"expected","link":"https://www.keralatv.in/october-2026-ott-releases/"},
     {"title":"The Third Murder","lang":"Malayalam","type":"Movie","platforms":["ManoramaMAX"],"date":"","status":"expected","note":"Rights acquired","link":"https://www.keralatv.in/the-third-murder-satellite-and-ott-rights/"},
     {"title":"Bandra","lang":"Malayalam","type":"Movie","platforms":["ZEE5"],"date":"","status":"expected","link":"https://www.filmibeat.com/malayalam/news/2026/bandra-ott-release-when-where-to-watch-dileep-and-tamannaah-bhatia-film-online-529599.html"},
-    {"title":"Drishyam 3","lang":"Hindi","type":"Movie","platforms":["Netflix"],"date":"","status":"expected","note":"After theatrical run","link":"https://www.esquireindia.co.in/entertainment/what-to-stream/drishyam-3-ott-release-ajay-devgn-film-stream-netflix-box-office-collection-story-and-plot-tabu-shriya-saran-rajat-kapoor"},
-    {"title":"Unmadham","lang":"Malayalam","type":"Movie","platforms":["SonyLIV"],"date":"","status":"expected","note":"Listed as coming soon","link":"https://www.filmibeat.com/top-listing/new-ott-release-movies-in-malayalam-this-week-4-1087.html"}
+    {"title":"Drishyam 3","lang":"Hindi","type":"Movie","platforms":["Netflix"],"date":"","status":"expected","note":"After theatrical run","link":"https://www.esquireindia.co.in/entertainment/what-to-stream/drishyam-3-ott-release-ajay-devgn-film-stream-netflix-box-office-collection-story-and-plot-tabu-shriya-saran-rajat-kapoor"}
   ]
 }
