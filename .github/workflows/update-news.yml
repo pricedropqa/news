@@ -2,7 +2,7 @@ name: Update news and publish
 
 on:
   schedule:
-    - cron: "*/30 * * * *"   # every 30 minutes
+    - cron: "41 */3 * * *"   # backup only: hourly-clock.yml starts this every hour
   push:
     branches: [main]          # publish right away when you change any file
   workflow_dispatch:          # "Run workflow" button in the Actions tab

@@ -210,6 +210,10 @@ feeds.forEach((f, idx) => {
 
 const cutoff = Date.now() - MAX_AGE_DAYS * 864e5;
 const seen = new Set();
+// Google News feeds (ids starting "gn-") repeat stories that a site's own feed already has: keep the site's copy.
+const titleKey = (t) => t.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().slice(0, 70);
+const siteTitles = new Set(all.filter((it) => !it.s.startsWith("gn-")).map((it) => titleKey(it.t)));
+all = all.filter((it) => !it.s.startsWith("gn-") || !siteTitles.has(titleKey(it.t)));
 all = all
   .filter((it) => it.d >= cutoff && it.d <= Date.now() + 36e5)
   .sort((a, b) => b.d - a.d)

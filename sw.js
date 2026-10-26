@@ -1,5 +1,5 @@
 // Offline support: app shell is cached; news.json and ott.json are network-first with cached fallback.
-const CACHE = "pdnews-v6";
+const CACHE = "pdnews-v7";
 const SHELL = ["./", "index.html", "style.css", "app.js", "manifest.json", "icon.svg", "icon-192.png"];
 
 self.addEventListener("install", (e) => {
