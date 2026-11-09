@@ -483,9 +483,9 @@
   render();
   refresh(false);
   setInterval(renderStatus, 60000);
-  // News is updated every hour: while the app is open, pick up the new batch without a manual refresh.
+  // News is updated every 2 hours: while the app is open, pick up the new batch without a manual refresh.
   setInterval(() => {
-    if (document.visibilityState === "visible" && Date.now() - state.data.updated > 62 * 60000) refresh(false);
+    if (document.visibilityState === "visible" && Date.now() - state.data.updated > 122 * 60000) refresh(false);
   }, 5 * 60000);
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible" && Date.now() - state.data.updated > 30 * 60000) refresh(false);
