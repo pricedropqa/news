@@ -137,13 +137,82 @@
     state.customItems = results.flat();
   }
 
+  // ---------- live refresh (refresh button) ----------
+  // The news file is rebuilt every hour. The refresh button also reads every site's feed right now
+  // through our Cloudflare proxy, and adds any stories that came out since the last hourly update.
+  const ANDROID_RE = /\b(android|pixel|galaxy|samsung|one ?ui|oneplus|xiaomi|redmi|poco|oppo|vivo|realme|honor|huawei|motorola|moto g|nothing phone|qualcomm|snapdragon|wear ?os|chromebook|gemini)\b/i;
+  const APPLE_RE = /\b(iphone|ipad|ios|ipados|macos|apple|mac|macbook|imac|airpods|apple watch|watchos|vision pro|siri|app store)\b/i;
+  const OTT_LANGS = [["ott-ml", /\b(malayalam|mollywood|manorama ?max)\b/i], ["ott-ta", /\b(tamil|kollywood)\b/i], ["ott-hi", /\b(hindi|bollywood)\b/i], ["ott-en", /\b(english|hollywood)\b/i]];
+  const titleKey = (t) => t.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().slice(0, 70);
+
+  async function liveFeed(feed) {
+    let items = null;
+    for (const url of [feed.url, feed.fallback].filter(Boolean)) {
+      try { items = parseXml(await fetchViaProxy(url), feed); break; } catch {}
+    }
+    if (!items) return [];
+    const out = [];
+    for (const it of items) {
+      if (feed.trim) it.t = it.t.replace(new RegExp(`\\s*[-|–]\\s*(${feed.trim})\\s*$`, "i"), "");
+      it.x = it.x.replace(/\s*submitted by\s+\/u\/[\s\S]*$/i, "").replace(/\b(The post|Read more|Continue reading)\b[\s\S]*$/i, "").trim();
+      const text = `${it.t} ${it.x}`;
+      if (feed.match && !new RegExp(feed.match, "i").test(text)) continue;
+      if (feed.skip && new RegExp(feed.skip, "i").test(text)) continue;
+      const cats = new Set([feed.cat]);
+      if (feed.cat === "ott") { OTT_LANGS.forEach(([k, re]) => re.test(text) && cats.add(k)); if (feed.lang) cats.add(feed.lang); }
+      else { if (ANDROID_RE.test(text)) cats.add("android"); if (APPLE_RE.test(text)) cats.add("apple"); }
+      it.c = [...cats];
+      out.push(it);
+    }
+    return out;
+  }
+
+  async function loadLive() {
+    let feeds;
+    try { feeds = await (await fetch("feeds.json?v=" + Math.floor(Date.now() / 60000), { cache: "no-store" })).json(); } catch { return 0; }
+    feeds = feeds.filter((f) => !state.off.has(f.id));
+    const found = [];
+    let next = 0;
+    const worker = async () => { while (next < feeds.length) { const f = feeds[next++]; found.push(...await liveFeed(f).catch(() => [])); } };
+    await Promise.all(Array.from({ length: 8 }, worker));   // 8 sites at a time
+    const links = new Set(state.data.items.map((it) => it.l.replace(/[?#].*$/, "").replace(/\/$/, "")));
+    const titles = new Set(state.data.items.map((it) => titleKey(it.t)));
+    const fresh = [];
+    for (const it of found.sort((a, b) => a.s.startsWith("gn-") - b.s.startsWith("gn-") || b.d - a.d)) {
+      const lk = it.l.replace(/[?#].*$/, "").replace(/\/$/, ""), tk = titleKey(it.t);
+      if (links.has(lk) || titles.has(tk) || it.d > Date.now() + 36e5 || it.d < Date.now() - 10 * 864e5) continue;
+      links.add(lk); titles.add(tk); fresh.push(it);
+    }
+    if (fresh.length) {
+      state.data.items = [...fresh, ...state.data.items].sort((a, b) => b.d - a.d);
+      for (const src of state.data.sources) src.count = state.data.items.filter((it) => it.s === src.id).length;
+    }
+    return fresh.length;
+  }
+
+  // Also picks up a new version of the app itself, then reloads once it's ready.
+  function updateApp() {
+    if (!("serviceWorker" in navigator)) return;
+    navigator.serviceWorker.getRegistration().then((reg) => {
+      if (!reg) return;
+      navigator.serviceWorker.addEventListener("controllerchange", () => location.reload(), { once: true });
+      reg.update().catch(() => {});
+    }).catch(() => {});
+  }
+
   async function refresh(manual) {
     const btn = $("refreshBtn");
     btn.classList.add("spin");
     if (!state.data.items.length) renderSkeleton();
     try {
       await Promise.all([loadMain().catch((e) => { if (!state.data.items.length) throw e; }), loadCustom(), loadOtt()]);
-      if (manual) toast("News updated");
+      if (manual) {
+        updateApp();
+        render();
+        toast("Checking every site for new stories…");
+        const n = await loadLive();
+        toast(n ? `${n} new ${n === 1 ? "story" : "stories"} added` : "You're up to date");
+      }
     } catch (e) {
       if (!state.data.items.length && !state.customItems.length) {
         $("list").innerHTML = "";
@@ -483,9 +552,9 @@
   render();
   refresh(false);
   setInterval(renderStatus, 60000);
-  // News is updated every 2 hours: while the app is open, pick up the new batch without a manual refresh.
+  // News is updated every hour: while the app is open, pick up the new batch without a manual refresh.
   setInterval(() => {
-    if (document.visibilityState === "visible" && Date.now() - state.data.updated > 122 * 60000) refresh(false);
+    if (document.visibilityState === "visible" && Date.now() - state.data.updated > 62 * 60000) refresh(false);
   }, 5 * 60000);
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible" && Date.now() - state.data.updated > 30 * 60000) refresh(false);

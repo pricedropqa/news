@@ -1,14 +1,13 @@
-name: News clock (every 2 hours)
+name: Hourly clock
 
 # GitHub's own schedules often run hours late, so this workflow keeps time instead:
-# it starts "Update news and publish" every 2 hours (at 00:00, 02:00, 04:00 UTC ...),
-# runs for about 4 hours,
+# it starts "Update news and publish" at the top of every hour for about 5 hours,
 # then starts a fresh copy of itself to carry on. The schedule below only restarts
 # the chain if it ever stops.
 on:
   workflow_dispatch:
   schedule:
-    - cron: "11 */6 * * *"
+    - cron: "11 */4 * * *"
 
 permissions:
   actions: write          # lets this workflow start the other workflows
@@ -24,12 +23,12 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
-      - name: Start a news update every 2 hours, on the hour
+      - name: Start a news update every hour, on the hour
         run: |
-          for i in 1 2; do
+          for i in 1 2 3 4 5; do
             gh workflow run update-news.yml --repo "$GITHUB_REPOSITORY" --ref main
             echo "Update $i started at $(date -u +%H:%M) UTC"
-            sleep $(( 7200 - $(date +%s) % 7200 + 30 ))   # wait until 30 s past the next even hour (UTC)
+            sleep $(( 3600 - $(date +%s) % 3600 + 30 ))   # wait until 30 s past the next hour
           done
       - name: Hand over to the next clock
         if: always()
